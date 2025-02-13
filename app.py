@@ -9,6 +9,7 @@ import yaml
 import re
 import platform
 import time
+import json
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -191,6 +192,125 @@ def delete_file(filename):
         return redirect(url_for('files'))
     except Exception as e:
         return f"Error deleting file: {str(e)}", 400
+
+@app.route('/rssi')
+def rssi_grapher():
+    return render_template('rssi_grapher.html')
+
+@app.route('/rssi/data')
+def rssi_data():
+    try:
+        print("Starting rssi_data request...")
+        # Check if the API endpoint is reachable with shorter timeout
+        if not ping_host('10.5.0.1', timeout=2):
+            print("API endpoint ping failed")
+            return jsonify({
+                'success': False,
+                'message': 'API endpoint is not reachable'
+            }), 404
+            
+        try:
+            print("Starting netcat process...")
+            # Use popen to handle streaming output
+            process = subprocess.Popen(
+                ['nc', '10.5.0.1', '8103'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            
+            print("Reading netcat output...")
+            # Read for up to 2 seconds
+            import select
+            readable, _, _ = select.select([process.stdout], [], [], 2)
+            
+            if not readable:
+                process.kill()
+                print("No data received within timeout")
+                return jsonify({
+                    'success': False,
+                    'message': 'No data received from API endpoint'
+                }), 504
+                
+            # Read the available output
+            output = process.stdout.readline()
+            print(f"Raw output received: {output[:200]}...")
+            
+            if not output.strip():
+                process.kill()
+                print("Empty output received")
+                return jsonify({
+                    'success': False,
+                    'message': 'Empty response from API endpoint'
+                }), 504
+            
+            # Parse the received JSON data
+            try:
+                data = json.loads(output)
+                print(f"Parsed JSON: {str(data)[:200]}...")
+                print(f"Data type: {data.get('type')}")
+                print(f"Has rx_ant_stats: {'rx_ant_stats' in data}")
+                
+                if (data.get('type') == 'rx' and 
+                    'rx_ant_stats' in data and 
+                    data['rx_ant_stats']):
+                    print("Found valid rx stats in first object")
+                    process.kill()
+                    return jsonify({
+                        'success': True,
+                        'data': data
+                    })
+                
+                # If first object wasn't rx stats, try a few more times
+                for _ in range(5):  # Try up to 5 more lines
+                    output = process.stdout.readline()
+                    if not output.strip():
+                        continue
+                        
+                    print(f"Trying next line: {output[:200]}...")
+                    data = json.loads(output)
+                    
+                    if (data.get('type') == 'rx' and 
+                        'rx_ant_stats' in data and 
+                        data['rx_ant_stats']):
+                        print("Found valid rx stats in subsequent object")
+                        process.kill()
+                        return jsonify({
+                            'success': True,
+                            'data': data
+                        })
+                
+                process.kill()
+                print("No valid rx stats found in response")
+                return jsonify({
+                    'success': False,
+                    'message': 'No RSSI data found in response'
+                }), 404
+                
+            except json.JSONDecodeError as e:
+                process.kill()
+                print(f"JSON decode error: {str(e)}")
+                print(f"Raw output: {output[:200]}...")
+                return jsonify({
+                    'success': False,
+                    'message': 'Invalid JSON response from API'
+                }), 500
+                
+        except Exception as e:
+            if process:
+                process.kill()
+            print(f"Error reading from netcat: {str(e)}")
+            return jsonify({
+                'success': False,
+                'message': f'Error reading from netcat: {str(e)}'
+            }), 500
+            
+    except Exception as e:
+        print(f"Unexpected error in rssi_data: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Unexpected error: {str(e)}'
+        }), 500
 
 @app.route('/camera')
 def camera_settings():
