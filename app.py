@@ -54,7 +54,8 @@ def generate_thumbnail(video_path, video_filename):
                 ], check=True, capture_output=True)
                 
                 # Move the temporary thumbnail to final location
-                os.replace(temp_thumb.name, thumbnail_path)
+                import shutil
+                shutil.copy2(temp_thumb.name, thumbnail_path)
                 
             return thumbnail_filename
         except subprocess.CalledProcessError as e:
