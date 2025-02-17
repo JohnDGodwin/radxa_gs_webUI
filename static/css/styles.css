@@ -556,24 +556,34 @@ main {
 }
 
 .file-actions {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two equal columns */
     gap: 0.5rem;
     padding: 1rem;
     border-top: 1px solid #dee2e6;
 }
 
-.file-actions .button {
-    flex: 1;
+.file-actions .button,
+.file-actions .delete-form {
+    min-width: 0;  /* Allow buttons to shrink if needed */
+    width: 100%;   /* Take full width of grid cell */
 }
 
-/* Ensure the delete form takes up equal space */
+.file-actions .button {
+    padding: 0.8rem 1rem;  /* Consistent padding */
+    white-space: nowrap;   /* Prevent text wrapping */
+    text-overflow: ellipsis; /* Add ellipsis if text is too long */
+    overflow: hidden;      /* Hide overflow */
+}
+
+/* Style for the delete form */
 .delete-form {
-    flex: 1;
     margin: 0;
 }
 
 .delete-form .button {
     width: 100%;
+    margin: 0;
 }
 
 /* Responsive adjustments */
