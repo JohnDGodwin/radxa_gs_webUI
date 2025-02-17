@@ -564,13 +564,12 @@ main {
 }
 
 .file-actions .button,
-.file-actions .delete-form {
+.file-actions .delete-form .button {
     min-width: 0;  /* Allow buttons to shrink if needed */
     width: 100%;   /* Take full width of grid cell */
-}
-
-.file-actions .button {
-    padding: 0.8rem 1rem;  /* Consistent padding */
+    height: 40px;  /* Fixed height for all buttons */
+    line-height: 40px;  /* Center text vertically */
+    padding: 0 1rem;    /* Horizontal padding only */
     white-space: nowrap;   /* Prevent text wrapping */
     text-overflow: ellipsis; /* Add ellipsis if text is too long */
     overflow: hidden;      /* Hide overflow */
@@ -579,11 +578,7 @@ main {
 /* Style for the delete form */
 .delete-form {
     margin: 0;
-}
-
-.delete-form .button {
-    width: 100%;
-    margin: 0;
+    height: 40px;  /* Match button height */
 }
 
 /* Responsive adjustments */
