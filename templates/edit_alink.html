@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit ALink Settings - OpenIPC Ground Station</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Radxa Zero 3W -- OpenIPC Ground Station</h1>
+    </header>
+    <main>
+        <div class="navigation">
+            <a href="{{ url_for('config') }}" class="button">Back to Config List</a>
+        </div>
+        
+        <div class="config-editor">
+            <h2>ALink Ground Station Settings</h2>
+            <div class="file-path">{{ filepath }}</div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% if config %}
+                <form method="POST" class="config-form">
+                    <div class="config-section">
+                        <h3>Link Quality Settings</h3>
+                        {% for field in editable_fields %}
+                            <div class="config-field">
+                                <label for="{{ field }}">{{ field }}:</label>
+                                <input type="number" 
+                                       id="{{ field }}"
+                                       name="{{ field }}"
+                                       value="{{ config['Settings'][field] }}"
+                                       step="1"
+                                       class="config-input"
+                                       required>
+                                {% if field in config['Descriptions'] %}
+                                    <div class="field-description">{{ config['Descriptions'][field] }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="button button-save">Save Changes</button>
+                    </div>
+                </form>
+            {% else %}
+                <p class="no-config">Unable to read configuration file or file is empty.</p>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>
