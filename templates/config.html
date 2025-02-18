@@ -26,7 +26,13 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-            
+              <div class="config-section">
+                <h3>ALink Ground Station Settings</h3>
+                <div class="config-item">
+                    <span class="config-path">/config/alink_gs.conf</span>
+                    <a href="{{ url_for('edit_alink') }}" class="button button-edit">Edit Link Quality Settings - 📡</a>
+                </div>
+            </div>
             <!-- Regular Config Files Section -->
             {% if configs %}
                 <div class="config-list">
