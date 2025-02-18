@@ -485,3 +485,106 @@ main {
         padding: 2rem;
     }
 }
+/* Add these styles to your existing styles.css */
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.file-card {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.file-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.video-thumbnail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.file-info {
+    padding: 1rem;
+}
+
+.file-name {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.file-size {
+    display: block;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.file-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two equal columns */
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.file-actions .button,
+.file-actions .delete-form .button {
+    min-width: 0;  /* Allow buttons to shrink if needed */
+    width: 100%;   /* Take full width of grid cell */
+    height: 40px;  /* Fixed height for all buttons */
+    line-height: 40px;  /* Center text vertically */
+    padding: 0 1rem;    /* Horizontal padding only */
+    white-space: nowrap;   /* Prevent text wrapping */
+    text-overflow: ellipsis; /* Add ellipsis if text is too long */
+    overflow: hidden;      /* Hide overflow */
+}
+
+/* Style for the delete form */
+.delete-form {
+    margin: 0;
+    height: 40px;  /* Match button height */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .file-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+}
