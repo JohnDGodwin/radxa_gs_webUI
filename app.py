@@ -21,7 +21,7 @@ CONFIG_WHITELIST = [
     '/etc/wifibroadcast.cfg',
     '/config/scripts/screen-mode',
     '/config/scripts/osd',
-    '/config/scripts/rec-fps'
+    '/config/scripts/rec-fps',
     '/config/alink_gs.conf'
 ]
 COMMANDS_SCRIPT = os.path.join(os.path.dirname(__file__), 'commands.sh')
