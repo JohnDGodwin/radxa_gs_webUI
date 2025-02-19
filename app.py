@@ -78,18 +78,35 @@ def index():
 @app.route('/files')
 def files():
     video_files = []
+    thumbnail_dir = '/config/webUI/static/thumbnails'
+    
     if os.path.exists(MEDIA_FOLDER):
         for file in os.listdir(MEDIA_FOLDER):
             if file.lower().endswith(('.mp4', '.avi', '.mkv', '.mov')):
                 file_path = os.path.join(MEDIA_FOLDER, file)
                 size = os.path.getsize(file_path)
                 size_mb = round(size / (1024 * 1024), 2)
+                
+                # Check for matching thumbnail
+                thumbnail_name = os.path.splitext(file)[0] + '.jpg'
+                thumbnail_path = os.path.join(thumbnail_dir, thumbnail_name)
+                
+                # Create relative URL for thumbnail if it exists
+                thumbnail_url = None
+                if os.path.exists(thumbnail_path):
+                    # Convert absolute path to relative URL
+                    thumbnail_url = f'/static/thumbnails/{thumbnail_name}'
+                
                 video_files.append({
                     'name': file,
                     'size': size_mb,
+                    'thumbnail': thumbnail_url
                 })
+    
+    # Sort files by name in descending order (newest first, assuming timestamp in filename)
+    video_files.sort(key=lambda x: x['name'], reverse=True)
     return render_template('files.html', files=video_files)
-
+    
 @app.route('/config')
 def config():
     # List available config files
