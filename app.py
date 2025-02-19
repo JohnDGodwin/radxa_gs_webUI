@@ -21,8 +21,7 @@ CONFIG_WHITELIST = [
     '/etc/wifibroadcast.cfg',
     '/config/scripts/screen-mode',
     '/config/scripts/osd',
-    '/config/scripts/rec-fps',
-    '/config/alink_gs.conf'
+    '/config/scripts/rec-fps'
 ]
 COMMANDS_SCRIPT = os.path.join(os.path.dirname(__file__), 'commands.sh')
 THUMBNAIL_FOLDER = os.path.join('static', 'thumbnails')
