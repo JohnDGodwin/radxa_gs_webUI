@@ -21,7 +21,8 @@ CONFIG_WHITELIST = [
     '/etc/wifibroadcast.cfg',
     '/config/scripts/screen-mode',
     '/config/scripts/osd',
-    '/config/scripts/rec-fps'
+    '/config/scripts/rec-fps',
+    '/config/alink_gs.conf'
 ]
 COMMANDS_SCRIPT = os.path.join(os.path.dirname(__file__), 'commands.sh')
 THUMBNAIL_FOLDER = os.path.join('static', 'thumbnails')
@@ -608,7 +609,37 @@ def restart_gs_wfb():
             'message': f'Unexpected error: {str(e)}'
         }), 500
 
-
+@app.route('/config/edit_alink', methods=['GET', 'POST'])
+def edit_alink():
+    filepath = '/config/alink_gs.conf'
+    
+    if request.method == 'POST':
+        # Get current config
+        current_config = read_ini_file(filepath)
+        
+        # Update only the allowed fields
+        allowed_fields = ['min_rssi', 'max_rssi', 'min_snr', 'max_snr']
+        new_config = current_config.copy()
+        
+        for field in allowed_fields:
+            if field in request.form:
+                new_config['Settings'][field] = request.form[field]
+        
+        # Write updated config
+        if write_ini_file(filepath, new_config):
+            flash('ALink settings updated successfully!', 'success')
+        else:
+            flash('Error saving ALink settings', 'error')
+        
+        return redirect(url_for('edit_alink'))
+    
+    # Read current config
+    config_data = read_ini_file(filepath)
+    return render_template('edit_alink.html', 
+                         filepath=filepath,
+                         filename='alink_gs.conf',
+                         config=config_data,
+                         editable_fields=['min_rssi', 'max_rssi', 'min_snr', 'max_snr'])
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
