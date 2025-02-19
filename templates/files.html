@@ -21,19 +21,6 @@
             {% if files %}
                 <div class="file-grid">
                     {% for file in files %}
-                    <div class="file-card">
-                        <div class="thumbnail-container">
-                            {% if file.thumbnail %}
-                                <img src="{{ url_for('static', filename='thumbnails/' + file.thumbnail) }}" 
-                                     alt="Thumbnail for {{ file.name }}"
-                                     class="video-thumbnail"
-                                     loading="lazy">
-                            {% else %}
-                                <div class="thumbnail-placeholder">
-                                    <span>No thumbnail available</span>
-                                </div>
-                            {% endif %}
-                        </div>
                         <div class="file-info">
                             <span class="file-name">{{ file.name }}</span>
                             <span class="file-size">{{ file.size }} MB</span>
