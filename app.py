@@ -594,5 +594,33 @@ def edit_alink():
                          config=config_data,
                          editable_fields=['min_rssi', 'max_rssi', 'min_snr', 'max_snr'])
 
+# Add this new route to app.py
+@app.route('/config/restart-alink', methods=['POST'])
+def restart_alink_service():
+    try:
+        # Execute the restart command
+        result = subprocess.run(
+            ['sudo', 'systemctl', 'restart', 'alink_gs.service'],
+            check=True,
+            text=True,
+            capture_output=True
+        )
+        
+        return jsonify({
+            'success': True,
+            'message': 'ALink service restarted successfully'
+        })
+        
+    except subprocess.CalledProcessError as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error restarting ALink service: {str(e)}'
+        }), 500
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Unexpected error: {str(e)}'
+        }), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
