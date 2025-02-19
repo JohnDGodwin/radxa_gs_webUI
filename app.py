@@ -10,7 +10,6 @@ import re
 import platform
 import time
 import json
-import tempfile
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -24,45 +23,6 @@ CONFIG_WHITELIST = [
     '/config/scripts/rec-fps'
 ]
 COMMANDS_SCRIPT = os.path.join(os.path.dirname(__file__), 'commands.sh')
-THUMBNAIL_FOLDER = os.path.join('static', 'thumbnails')
-THUMBNAIL_SIZE = '320x180'  # 16:9 aspect ratio
-
-def ensure_thumbnail_dir():
-    """Ensure the thumbnail directory exists"""
-    os.makedirs(THUMBNAIL_FOLDER, exist_ok=True)
-
-def generate_thumbnail(video_path, video_filename):
-    """Generate a thumbnail for a video file using ffmpeg"""
-    thumbnail_filename = f"{os.path.splitext(video_filename)[0]}.jpg"
-    thumbnail_path = os.path.join(THUMBNAIL_FOLDER, thumbnail_filename)
-    
-    # Only generate thumbnail if it doesn't exist or video is newer
-    if (not os.path.exists(thumbnail_path) or 
-        os.path.getmtime(video_path) > os.path.getmtime(thumbnail_path)):
-        try:
-            # Create a temporary file for the thumbnail
-            with tempfile.NamedTemporaryFile(suffix='.jpg') as temp_thumb:
-                # Extract frame at 1 second mark
-                subprocess.run([
-                    'ffmpeg', '-y',
-                    '-ss', '1',  # Seek to 1 second
-                    '-i', video_path,
-                    '-vframes', '1',  # Extract one frame
-                    '-s', THUMBNAIL_SIZE,  # Resize
-                    '-f', 'image2',  # Force image output
-                    temp_thumb.name
-                ], check=True, capture_output=True)
-                
-                # Move the temporary thumbnail to final location
-                import shutil
-                shutil.copy2(temp_thumb.name, thumbnail_path)
-                
-            return thumbnail_filename
-        except subprocess.CalledProcessError as e:
-            print(f"Error generating thumbnail for {video_filename}: {e}")
-            return None
-    
-    return thumbnail_filename
 
 def ping_host(host, timeout=10):
     """
