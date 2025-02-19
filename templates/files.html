@@ -19,18 +19,29 @@
         <div class="files-container">
             <h2>Video Files</h2>
             {% if files %}
-                <div class="file-list">
+                <div class="file-grid">
                     {% for file in files %}
-                        <div class="file-item">
-                            <span class="file-name">{{ file.name }}</span>
-                            <span class="file-size">{{ file.size }} MB</span>
-                        <div class="file-actions">
-                            <a href="{{ url_for('download_file', filename=file.name) }}" class="button button-download">Download</a>
-                            <form action="{{ url_for('delete_file', filename=file.name) }}" method="POST" class="delete-form">
-                                <button type="submit" class="button button-delete" onclick="return confirm('Are you sure you want to delete this file?')">Delete</button>
-                            </form>
+                        <div class="file-card">
+                            <div class="thumbnail-container">
+                                {% if file.thumbnail %}
+                                    <img src="{{ file.thumbnail }}" alt="{{ file.name }}" class="video-thumbnail">
+                                {% else %}
+                                    <div class="thumbnail-placeholder">
+                                        No thumbnail available
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="file-info">
+                                <span class="file-name">{{ file.name }}</span>
+                                <span class="file-size">{{ file.size }} MB</span>
+                            </div>
+                            <div class="file-actions">
+                                <a href="{{ url_for('download_file', filename=file.name) }}" class="button button-download">Download</a>
+                                <form action="{{ url_for('delete_file', filename=file.name) }}" method="POST" class="delete-form">
+                                    <button type="submit" class="button button-delete" onclick="return confirm('Are you sure you want to delete this file?')">Delete</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
                     {% endfor %}
                 </div>
             {% else %}
