@@ -24,7 +24,6 @@
                         <div class="file-item">
                             <span class="file-name">{{ file.name }}</span>
                             <span class="file-size">{{ file.size }} MB</span>
-                        </div>
                         <div class="file-actions">
                             <a href="{{ url_for('download_file', filename=file.name) }}" class="button button-download">Download</a>
                             <form action="{{ url_for('delete_file', filename=file.name) }}" method="POST" class="delete-form">
