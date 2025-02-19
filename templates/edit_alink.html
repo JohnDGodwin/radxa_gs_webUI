@@ -57,5 +57,58 @@
             {% endif %}
         </div>
     </main>
+    <script>
+    // Function to restart the ALink service
+    async function restartAlinkService() {
+        try {
+            const response = await fetch('/config/restart-alink', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to restart ALink service');
+            }
+            
+            if (result.success) {
+                alert('ALink service restarted successfully.');
+            } else {
+                throw new Error(result.message || 'Failed to restart ALink service');
+            }
+        } catch (error) {
+            alert(error.message || 'Error restarting ALink service. Please try again.');
+        }
+    }
+
+    // Add event listener to the form
+    document.querySelector('.config-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // First submit the form data
+        try {
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to save settings');
+            }
+            
+            // If settings were saved successfully, restart the service
+            await restartAlinkService();
+            
+            // Redirect back to the config page
+            window.location.href = "{{ url_for('config') }}";
+        } catch (error) {
+            alert(error.message || 'Error saving settings. Please try again.');
+        }
+    });
+</script>
 </body>
 </html>
