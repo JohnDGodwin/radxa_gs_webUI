@@ -77,7 +77,6 @@ def index():
 
 @app.route('/files')
 def files():
-    ensure_thumbnail_dir()
     video_files = []
     if os.path.exists(MEDIA_FOLDER):
         for file in os.listdir(MEDIA_FOLDER):
@@ -85,14 +84,9 @@ def files():
                 file_path = os.path.join(MEDIA_FOLDER, file)
                 size = os.path.getsize(file_path)
                 size_mb = round(size / (1024 * 1024), 2)
-                
-                # Generate thumbnail
-                thumbnail = generate_thumbnail(file_path, file)
-                
                 video_files.append({
                     'name': file,
                     'size': size_mb,
-                    'thumbnail': thumbnail
                 })
     return render_template('files.html', files=video_files)
 
