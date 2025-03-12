@@ -78,7 +78,7 @@ def index():
 @app.route('/files')
 def files():
     video_files = []
-    thumbnail_dir = '/config/webUI/static/thumbnails'
+    thumbnail_dir = '/etc/webUI/static/thumbnails'
     
     if os.path.exists(MEDIA_FOLDER):
         for file in os.listdir(MEDIA_FOLDER):
