@@ -6,7 +6,7 @@
     <title>RSSI Grapher - OpenIPC Ground Station</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='javascript/charts.js') }}"></script>
     <style>
         .chart-container {
             background: white;
