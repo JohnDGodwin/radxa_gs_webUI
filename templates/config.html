@@ -52,6 +52,9 @@
                 <div class="gskey-status">
                     {% if gs_key_exists %}
                         <p class="status-text">Current gs.key file size: {{ "%.2f"|format(gs_key_size / 1024) }} KB</p>
+                        {% if is_stock_key is not none %}
+                            <p class="status-text">Current gs.key: {% if is_stock_key %}stock{% else %}custom{% endif %}</p>
+                        {% endif %}
                     {% else %}
                         <p class="status-text">No gs.key file present</p>
                     {% endif %}
