@@ -10,6 +10,7 @@ import re
 import platform
 import time
 import json
+import hashlib
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -23,6 +24,26 @@ CONFIG_WHITELIST = [
     '/config/scripts/rec-fps'
 ]
 COMMANDS_SCRIPT = os.path.join(os.path.dirname(__file__), 'commands.sh')
+
+def calculate_md5(filepath):
+    """
+    Calculate MD5 hash of a file
+    
+    Args:
+        filepath (str): Path to the file
+        
+    Returns:
+        str: MD5 hash or None if file doesn't exist
+    """
+    if not os.path.exists(filepath):
+        return None
+        
+    md5_hash = hashlib.md5()
+    with open(filepath, "rb") as f:
+        # Read file in chunks to handle large files efficiently
+        for chunk in iter(lambda: f.read(4096), b""):
+            md5_hash.update(chunk)
+    return md5_hash.hexdigest()
 
 def ping_host(host, timeout=10):
     """
@@ -122,13 +143,19 @@ def config():
     gs_key_exists = os.path.exists(GS_KEY_PATH)
     if gs_key_exists:
         gs_key_size = os.path.getsize(GS_KEY_PATH)
+        
+        # Calculate MD5 hash and check if it's the stock key
+        gs_key_md5 = calculate_md5(GS_KEY_PATH)
+        is_stock_key = gs_key_md5 == "24767056dc165963fe6db7794aee12cd"
     else:
         gs_key_size = 0
+        is_stock_key = None
         
     return render_template('config.html', 
                          configs=available_configs,
                          gs_key_exists=gs_key_exists,
-                         gs_key_size=gs_key_size)
+                         gs_key_size=gs_key_size,
+                         is_stock_key=is_stock_key)
 
 @app.route('/config/edit/<path:filepath>', methods=['GET', 'POST'])
 def edit_config(filepath):
