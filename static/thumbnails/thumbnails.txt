@@ -1,1 +1,0 @@
-Thumbnails for WebUI go in this folder
