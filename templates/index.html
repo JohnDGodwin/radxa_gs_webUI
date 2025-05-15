@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Server</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <header>
+        <h1>Video Server</h1>
+    </header>
+    
+    <main>
+        {% if videos %}
+            <div class="video-grid">
+                {% for video in videos %}
+                    <div class="video-card">
+                        <div class="video-title">{{ video }}</div>
+                        <div class="video-preview">
+                            <video controls preload="metadata">
+                                <source src="/video/{{ video }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="video-actions">
+                            <button class="play-btn" data-video="{{ video }}">Play</button>
+                            <a href="/download/{{ video }}" class="download-btn">Download</a>
+                            <button class="delete-btn" data-video="{{ video }}">Delete</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-videos">
+                <p>No video files found in the directory.</p>
+            </div>
+        {% endif %}
+    </main>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title"></h2>
+            <div class="modal-video-container">
+                <video id="modal-video" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-confirmation" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this video? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="confirm-delete" class="danger-btn">Delete</button>
+                <button id="cancel-delete" class="secondary-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
+</body>
+</html>
